@@ -1,36 +1,47 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useCallback, useMemo, useRef, useState } from "react"
+import { InputLogin } from "./components/InputLogin"
 
 export const Login = () => {
+  const inputPasswordRef = useRef<HTMLInputElement>(null)
+  const [mail, setMail] = useState("")
+  const [password, setPassword] = useState("")
 
-    const [mail, setMail] = useState("")
-    const [password, setPassword] = useState("")
+  const mailLength = useMemo(() => {
+    return mail.length * 10
+  }, [])
 
-    const handleLogin = () => {
-        console.log(mail, password)
+  const handleLogin = useCallback(() => {
+    console.log(mail, password)
+
+    if (inputPasswordRef.current !== null) {
+      inputPasswordRef.current.focus()
     }
-    
-    return (
-        <div>
-           <h1>Login in your account</h1>
-           <form>
-                <label>
-                    <span>mail</span>
-                    <input type="text" value={mail} onChange={e => setMail(e.target.value)}/>
-                </label>
+  }, [mail, password])
 
-                <label>
-                    <span>password</span>
-                    <input type="password"  value={password} onChange={e => setPassword(e.target.value)}/>
-                </label>
+  return (
+    <div>
+      <h1>Login in your account</h1>
 
-                <button
-                    type="button"
-                    onClick={handleLogin}
-                    >
-                    Login
-                </button>
-           </form>
-        </div>
-    )
+      <p>Quantidade de caracteres no email: {mailLength * mailLength}</p>
+
+      <form>
+        <InputLogin
+          label="mail"
+          value={mail}
+          onChange={(newValue) => setMail(newValue)}
+          onPressEnter={() => inputPasswordRef.current?.focus()}
+        />
+
+        <InputLogin
+          label="password"
+          value={password}
+          onChange={(newValue) => setPassword(newValue)}
+        />
+
+        <button type="button" onClick={handleLogin}>
+          Login
+        </button>
+      </form>
+    </div>
+  )
 }
